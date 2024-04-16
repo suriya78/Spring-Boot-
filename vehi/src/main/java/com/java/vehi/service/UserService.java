@@ -4,10 +4,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.java.vehi.model.User;
+import com.java.vehi.model.Vehicle;
 import com.java.vehi.repository.UserRepo;
+import com.java.vehi.repository.VehicleRepo;
 
 @Service
 public class UserService {
@@ -15,12 +20,19 @@ public class UserService {
     @Autowired
     private UserRepo userRepo;
 
-    public String getuserName(User user) {
+    @Autowired
+    private VehicleRepo vehicleRepo;
+
+    public List<User> getAllUsers(int pageNo, int pageSize, String sortBy) {
+        Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(sortBy));
+        return userRepo.findAll(pageable).getContent();
+    }
+    public User createUser(User user) {
         userRepo.save(user);
-        return user.getUser_name();
+        return user;
     }
 
-    public List<User> getUserData() {
+    public List<User> getAllUsers() {
        List<User> li=new ArrayList<>(userRepo.findAll());
        return li;
     }
@@ -38,5 +50,25 @@ public class UserService {
         }
         return true; 
     }
+
+    public boolean deleteExample(int id) {
+        if (userRepo.existsById(id)) 
+        {
+            userRepo.deleteById(id);
+            return true;
+        }
+        return false;
+    }
+
+    public Vehicle createUser(Vehicle vehicle) {
+        return vehicleRepo.save(vehicle);
+    }
+
+    public List<User> getAllUsers(Integer pageNo, Integer pageSize, String sortBy) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getAllUsers'");
+    }
+
+    
     
 }
